@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == "add" %}Add Education{% else %}Edit Education{% endif %} • Dashboard{% endblock %}
+
+{% block content %}
+<div class="card-pro p-4">
+  <div class="d-flex justify-content-between align-items-center gap-2">
+    <h1 class="h5 fw-bold mb-0">
+      {% if mode == "add" %}Add Education{% else %}Edit Education{% endif %}
+    </h1>
+    <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard' %}">
+      <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+  </div>
+
+  <div class="divider my-3"></div>
+
+  <form method="post" class="row g-3">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div class="col-12">
+        <label class="form-label text-muted2">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="text-muted2 small mt-1">{{ field.help_text }}</div>
+        {% endif %}
+        {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="col-12 d-flex gap-2">
+      <button class="btn btn-red" type="submit">
+        <i class="bi bi-check2 me-1"></i> Save
+      </button>
+
+      {% if mode == "edit" %}
+        <a class="btn btn-outline-danger" href="{% url 'main:dashboard_education_delete' education.id %}">
+          <i class="bi bi-trash me-1"></i> Delete
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

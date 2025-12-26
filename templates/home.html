@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Home • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge-soft">Django</span>
+        <span class="badge-soft">DRF Ready</span>
+        <span class="badge-soft">SQA Mindset</span>
+        <span class="badge-soft">Research + BizDev</span>
+      </div>
+
+      <h1 class="display-5 fw-bold">
+        {{ profile.headline|default:"CSE Student & Aspiring SQA/Python Engineer" }}
+      </h1>
+
+      <p class="mt-3 text-muted2 fs-5">
+        {{ profile.about|default:"I build clean Django apps, APIs, and practical systems with a strong testing mindset."|linebreaksbr }}
+      </p>
+
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-red px-4" href="{% url 'main:projects' %}">
+          <i class="bi bi-box-arrow-in-right me-1"></i> View Projects
+        </a>
+        <a class="btn btn-ghost px-4" href="{% url 'main:contact' %}">
+          <i class="bi bi-chat-dots me-1"></i> Contact
+        </a>
+        {% if profile.linkedin_url %}
+          <a class="btn btn-ghost px-4" target="_blank" rel="noopener" href="{{ profile.linkedin_url }}">
+            <i class="bi bi-linkedin me-1"></i> LinkedIn
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="mt-4 glow-line"></div>
+
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        {% if profile.location %}<span class="pill"><i class="bi bi-geo-alt me-1"></i>{{ profile.location }}</span>{% endif %}
+        {% if profile.email %}<span class="pill"><i class="bi bi-envelope me-1"></i>{{ profile.email }}</span>{% endif %}
+        {% if profile.phone %}<span class="pill"><i class="bi bi-telephone me-1"></i>{{ profile.phone }}</span>{% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card-pro p-4">
+        <div class="d-flex align-items-center gap-3">
+          {% if profile.profile_image %}
+            <img class="avatar" src="{{ profile.profile_image.url }}" alt="Profile image">
+          {% else %}
+            <div class="avatar d-flex align-items-center justify-content-center">
+              <i class="bi bi-person-circle fs-1 text-muted2"></i>
+            </div>
+          {% endif %}
+
+          <div class="flex-grow-1">
+            <div class="fw-semibold fs-5">{{ profile.full_name|default:"Your Name" }}</div>
+            <div class="text-muted2">{{ profile.headline|default:"Django Developer" }}</div>
+            <div class="small text-muted2 mt-2">
+              <i class="bi bi-stars me-1"></i> Available for internships / junior roles
+            </div>
+          </div>
+        </div>
+
+        <div class="divider my-4"></div>
+
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="text-muted2 small">Featured Projects</div>
+            <div class="fw-semibold">{{ featured_projects|length }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted2 small">Total Projects</div>
+            <div class="fw-semibold">{{ all_projects|length }}</div>
+          </div>
+        </div>
+
+        <div class="mt-4 d-grid gap-2">
+          <a class="btn btn-ghost" href="{% url 'main:experience' %}">
+            <i class="bi bi-briefcase me-1"></i> See Experience
+          </a>
+          {% if profile.cv_file %}
+            <a class="btn btn-red" href="{{ profile.cv_file.url }}" target="_blank" rel="noopener">
+              <i class="bi bi-download me-1"></i> Download CV
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-4">
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card-pro p-4 h-100">
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="h5 fw-semibold mb-0">Featured Projects</h2>
+          <a class="text-decoration-none small" href="{% url 'main:projects' %}">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="divider my-3"></div>
+
+        {% if featured_projects %}
+          <div class="row g-3">
+            {% for p in featured_projects|slice:":4" %}
+              <div class="col-12">
+                <div class="card-pro p-3">
+                  <div class="d-flex gap-3 align-items-start">
+                    {% if p.image %}
+                      <img src="{{ p.image.url }}" alt="{{ p.title }}" style="width:84px;height:56px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.10);">
+                    {% else %}
+                      <div style="width:84px;height:56px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);" class="d-flex align-items-center justify-content-center">
+                        <i class="bi bi-image text-muted2"></i>
+                      </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold">{{ p.title }}</div>
+                      <div class="text-muted2 small">{{ p.short_description }}</div>
+                      <div class="text-muted2 small mt-2">
+                        <i class="bi bi-code-slash me-1"></i>{{ p.tech_stack }}
+                      </div>
+                      <div class="mt-2 d-flex flex-wrap gap-2">
+                        {% if p.github_url %}<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="{{ p.github_url }}"><i class="bi bi-github me-1"></i>Code</a>{% endif %}
+                        {% if p.live_url %}<a class="btn btn-red btn-sm" target="_blank" rel="noopener" href="{{ p.live_url }}"><i class="bi bi-box-arrow-up-right me-1"></i>Live</a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted2 mb-0">No featured projects yet. Mark some projects as featured in Admin.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card-pro p-4 h-100">
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="h5 fw-semibold mb-0">Recent Experience</h2>
+          <a class="text-decoration-none small" href="{% url 'main:experience' %}">Details <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="divider my-3"></div>
+
+        {% if experiences %}
+          <div class="timeline">
+            {% for e in experiences|slice:":4" %}
+              <div class="tl-item">
+                <div class="fw-semibold">{{ e.role }}</div>
+                <div class="text-muted2 small">
+                  {{ e.organization }}{% if e.location %} • {{ e.location }}{% endif %}
+                </div>
+                <div class="text-muted2 small">
+                  <i class="bi bi-calendar2 me-1"></i>
+                  {{ e.start_date }} —
+                  {% if e.is_current %}Present{% elif e.end_date %}{{ e.end_date }}{% else %}-{% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted2 mb-0">Add experience entries from Admin.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

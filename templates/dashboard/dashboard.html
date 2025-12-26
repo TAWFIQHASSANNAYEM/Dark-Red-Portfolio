@@ -1,0 +1,411 @@
+
+{% extends "base.html" %}
+{% block title %}Dashboard • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Dashboard-only enhancements */
+  .dash-header{
+    background: linear-gradient(180deg, rgba(179,19,19,.14), rgba(255,255,255,.02));
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px;
+    padding: 1.1rem 1.1rem;
+  }
+  .stat-card{
+    background: linear-gradient(180deg, rgba(20,20,26,.96), rgba(16,16,22,.92));
+    border: 1px solid rgba(38,38,51,.9);
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.20);
+    padding: 1rem 1rem;
+    height: 100%;
+  }
+  .stat-icon{
+    width: 44px; height: 44px; border-radius: 14px;
+    display:flex; align-items:center; justify-content:center;
+    border: 1px solid rgba(179,19,19,.22);
+    background: rgba(179,19,19,.10);
+  }
+  .section-head{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.75rem;
+    margin-top: 1.25rem;
+  }
+  .section-title{
+    display:flex; align-items:center; gap:.55rem;
+    font-weight: 700;
+  }
+  .section-title i{
+    color: rgba(255,255,255,.82);
+    background: rgba(179,19,19,.10);
+    border: 1px solid rgba(179,19,19,.22);
+    padding: .4rem .55rem;
+    border-radius: 12px;
+  }
+  .mini-card{
+    background: rgba(255,255,255,.02);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px;
+    padding: .9rem .95rem;
+  }
+  .mini-meta{
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  .actions .btn{
+    border-radius: 12px;
+  }
+  .table-pro{
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.02);
+  }
+  .table-pro table{ margin-bottom:0; }
+  .table-pro thead th{
+    font-size: .85rem;
+    color: rgba(233,233,238,.90);
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  }
+  .table-pro tbody td{
+    border-top: 1px solid rgba(255,255,255,.06) !important;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding: .35rem .6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.03);
+    color: var(--muted);
+    font-size: .85rem;
+    font-weight: 600;
+  }
+  .chip-red{
+    border-color: rgba(179,19,19,.25);
+    background: rgba(179,19,19,.10);
+    color: #ffd0d0;
+  }
+  .truncate-2{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Top header block -->
+<div class="dash-header mb-3">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <h1 class="h4 fw-bold mb-1">Dashboard</h1>
+      <div class="text-muted2">
+        Manage your portfolio content (Profile, Projects, Experience, Education).
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        <span class="chip chip-red"><i class="bi bi-shield-lock"></i> Private</span>
+        <span class="chip"><i class="bi bi-lightning-charge"></i> Quick edits</span>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-ghost" href="{% url 'main:dashboard_profile_edit' %}">
+        <i class="bi bi-person-gear me-1"></i> Edit Profile
+      </a>
+      <a class="btn btn-red" href="{% url 'main:dashboard_project_add' %}">
+        <i class="bi bi-plus-lg me-1"></i> Add Project
+      </a>
+      <a class="btn btn-ghost" href="{% url 'main:dashboard_experience_add' %}">
+        <i class="bi bi-plus-lg me-1"></i> Add Experience
+      </a>
+      <a class="btn btn-ghost" href="{% url 'main:dashboard_education_add' %}">
+        <i class="bi bi-plus-lg me-1"></i> Add Education
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Stats row -->
+<div class="row g-3">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-muted2 small">Projects</div>
+          <div class="fw-bold fs-3">{{ projects|length }}</div>
+        </div>
+        <div class="stat-icon"><i class="bi bi-kanban fs-5"></i></div>
+      </div>
+      <div class="text-muted2 small mt-2 truncate-2">
+        Showcase your best work—add images + live links.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-muted2 small">Featured</div>
+          <div class="fw-bold fs-3">{{ featured_projects|length }}</div>
+        </div>
+        <div class="stat-icon"><i class="bi bi-stars fs-5"></i></div>
+      </div>
+      <div class="text-muted2 small mt-2 truncate-2">
+        Mark top projects as featured for home page highlight.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-muted2 small">Experience</div>
+          <div class="fw-bold fs-3">{{ experiences|length }}</div>
+        </div>
+        <div class="stat-icon"><i class="bi bi-briefcase fs-5"></i></div>
+      </div>
+      <div class="text-muted2 small mt-2 truncate-2">
+        Add roles, responsibilities, and impact in bullet style.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-muted2 small">Education</div>
+          <div class="fw-bold fs-3">{{ educations|length }}</div>
+        </div>
+        <div class="stat-icon"><i class="bi bi-mortarboard fs-5"></i></div>
+      </div>
+      <div class="text-muted2 small mt-2 truncate-2">
+        Keep education updated (degree, years, CGPA/result).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile summary -->
+<div class="section-head">
+  <div class="section-title">
+    <i class="bi bi-person-badge"></i>
+    <span>Profile</span>
+  </div>
+  <div class="actions d-flex gap-2">
+    <a class="btn btn-ghost btn-sm" href="{% url 'main:home' %}">
+      <i class="bi bi-box-arrow-up-right me-1"></i> View Site
+    </a>
+    <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_profile_edit' %}">
+      <i class="bi bi-pencil-square me-1"></i> Edit Profile
+    </a>
+  </div>
+</div>
+
+<div class="mini-card mt-2">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <div class="fw-semibold">{{ profile.full_name|default:"Your Name" }}</div>
+      <div class="mini-meta">{{ profile.headline|default:"Your Headline" }}</div>
+      <div class="mini-meta mt-1">
+        {% if profile.email %}<i class="bi bi-envelope me-1"></i>{{ profile.email }}{% endif %}
+        {% if profile.location %}<span class="mx-2">•</span><i class="bi bi-geo-alt me-1"></i>{{ profile.location }}{% endif %}
+      </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      {% if profile.cv_file %}
+        <a class="btn btn-ghost btn-sm" href="{{ profile.cv_file.url }}" target="_blank" rel="noopener">
+          <i class="bi bi-file-earmark-arrow-down me-1"></i> CV
+        </a>
+      {% endif %}
+      {% if profile.github_url %}
+        <a class="btn btn-ghost btn-sm" href="{{ profile.github_url }}" target="_blank" rel="noopener">
+          <i class="bi bi-github me-1"></i> GitHub
+        </a>
+      {% endif %}
+      {% if profile.linkedin_url %}
+        <a class="btn btn-ghost btn-sm" href="{{ profile.linkedin_url }}" target="_blank" rel="noopener">
+          <i class="bi bi-linkedin me-1"></i> LinkedIn
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Projects table -->
+<div class="section-head">
+  <div class="section-title">
+    <i class="bi bi-kanban"></i>
+    <span>Projects</span>
+  </div>
+  <div class="actions d-flex gap-2">
+    <a class="btn btn-red btn-sm" href="{% url 'main:dashboard_project_add' %}">
+      <i class="bi bi-plus-lg me-1"></i> Add Project
+    </a>
+  </div>
+</div>
+
+{% if projects %}
+  <div class="table-pro mt-2">
+    <div class="table-responsive">
+      <table class="table table-dark align-middle"
+             style="--bs-table-bg: rgba(255,255,255,.00); --bs-table-border-color: rgba(255,255,255,.08);">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th class="d-none d-md-table-cell">Tech</th>
+            <th>Featured</th>
+            <th class="d-none d-lg-table-cell">Links</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in projects %}
+          <tr>
+            <td class="fw-semibold">
+              {{ p.title }}
+              <div class="text-muted2 small d-md-none mt-1">{{ p.tech_stack }}</div>
+            </td>
+
+            <td class="d-none d-md-table-cell text-muted2 small">{{ p.tech_stack }}</td>
+
+            <td>
+              {% if p.is_featured %}
+                <span class="chip chip-red"><i class="bi bi-stars"></i> Yes</span>
+              {% else %}
+                <span class="chip"><i class="bi bi-dash"></i> No</span>
+              {% endif %}
+            </td>
+
+            <td class="d-none d-lg-table-cell small">
+              {% if p.github_url %}<a href="{{ p.github_url }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+              {% if p.live_url %}{% if p.github_url %} • {% endif %}<a href="{{ p.live_url }}" target="_blank" rel="noopener">Live</a>{% endif %}
+            </td>
+
+            <td class="text-end">
+              <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_project_edit' p.id %}">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <a class="btn btn-outline-danger btn-sm" href="{% url 'main:dashboard_project_delete' p.id %}">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <div class="mini-card mt-2 text-muted2">No projects yet. Add your first project.</div>
+{% endif %}
+
+<!-- Experience list -->
+<div class="section-head">
+  <div class="section-title">
+    <i class="bi bi-briefcase"></i>
+    <span>Experience</span>
+  </div>
+  <div class="actions d-flex gap-2">
+    <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_experience_add' %}">
+      <i class="bi bi-plus-lg me-1"></i> Add
+    </a>
+  </div>
+</div>
+
+{% if experiences %}
+  <div class="row g-3 mt-1">
+    {% for e in experiences %}
+      <div class="col-12 col-lg-6">
+        <div class="mini-card h-100">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <div class="fw-semibold">{{ e.role }}</div>
+              <div class="mini-meta">
+                {{ e.organization }}{% if e.location %} • {{ e.location }}{% endif %}
+              </div>
+            </div>
+            <span class="chip chip-red">
+              {{ e.start_date }} —
+              {% if e.is_current %}Present{% elif e.end_date %}{{ e.end_date }}{% else %}-{% endif %}
+            </span>
+          </div>
+
+          {% if e.description %}
+            <div class="text-muted2 small mt-2 truncate-2">{{ e.description }}</div>
+          {% endif %}
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_experience_edit' e.id %}">
+              <i class="bi bi-pencil-square me-1"></i> Edit
+            </a>
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'main:dashboard_experience_delete' e.id %}">
+              <i class="bi bi-trash me-1"></i> Delete
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="mini-card mt-2 text-muted2">No experience added yet.</div>
+{% endif %}
+
+<!-- Education list -->
+<div class="section-head">
+  <div class="section-title">
+    <i class="bi bi-mortarboard"></i>
+    <span>Education</span>
+  </div>
+  <div class="actions d-flex gap-2">
+    <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_education_add' %}">
+      <i class="bi bi-plus-lg me-1"></i> Add
+    </a>
+  </div>
+</div>
+
+{% if educations %}
+  <div class="row g-3 mt-1">
+    {% for ed in educations %}
+      <div class="col-12 col-lg-6">
+        <div class="mini-card h-100">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <div class="fw-semibold">{{ ed.degree }}</div>
+              <div class="mini-meta">{{ ed.institution }}</div>
+              {% if ed.field_of_study %}
+                <div class="mini-meta"><i class="bi bi-book me-1"></i>{{ ed.field_of_study }}</div>
+              {% endif %}
+              {% if ed.result_or_cgpa %}
+                <div class="mini-meta"><i class="bi bi-award me-1"></i>{{ ed.result_or_cgpa }}</div>
+              {% endif %}
+            </div>
+            <span class="chip chip-red">
+              {{ ed.start_year }} —
+              {% if ed.end_year %}{{ ed.end_year }}{% else %}Present{% endif %}
+            </span>
+          </div>
+
+          {% if ed.description %}
+            <div class="text-muted2 small mt-2 truncate-2">{{ ed.description }}</div>
+          {% endif %}
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard_education_edit' ed.id %}">
+              <i class="bi bi-pencil-square me-1"></i> Edit
+            </a>
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'main:dashboard_education_delete' ed.id %}">
+              <i class="bi bi-trash me-1"></i> Delete
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="mini-card mt-2 text-muted2">No education added yet.</div>
+{% endif %}
+
+{% endblock %}
