@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q%vv#n@odm#vj#3d-q2qraxrf^ix0$*^@05i@s-=$zs&wuwrtp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'https://tawfiq.onrender.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://tawfiq.onrender.com/']
 
 
 # Application definition
