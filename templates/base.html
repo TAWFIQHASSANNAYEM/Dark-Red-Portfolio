@@ -1,80 +1,139 @@
-{% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>{% block title %}{{ profile.full_name|default:"Portfolio" }}{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site_settings.site_title|default:profile.full_name|default:"Portfolio" }}{% endblock %}</title>
   <meta name="description" content="{{ profile.headline|default:'Django Developer Portfolio' }}" />
 
-  <!-- Bootstrap 5 (responsive) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  {% if profile.favicon_link %}
+    <link rel="icon" type="image/png" href="{{ profile.favicon_link }}">
+  {% elif profile.favicon %}
+    <link rel="icon" type="image/png" href="{{ profile.favicon.url }}">
+  {% endif %}
 
-  <!-- Optional icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <!-- Bootstrap 5 (responsive) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  {% block extra_head %}{% endblock %}
 
   <style>
     :root{
-      --bg0:#0b0b0d;
-      --bg1:#111115;
-      --card:#14141a;
-      --text:#e9e9ee;
-      --muted:#b5b5c2;
-      --border:#262633;
-      --red:#8b0000;      /* dark red */
-      --red2:#b31313;     /* brighter accent */
-      --glow: rgba(179,19,19,.35);
+      /* Background colors */
+      --bg0:{{ site_settings.get_theme_colors.bg0|default:'#0b0b0d' }};
+      --bg1:{{ site_settings.get_theme_colors.bg1|default:'#111115' }};
+      --bg2:{{ site_settings.get_theme_colors.bg2|default:'#1a1a1f' }};
+      --navbar-bg:{{ site_settings.get_theme_colors.navbar_bg|default:'rgba(10,10,14,.85)' }};
+      --card:{{ site_settings.get_theme_colors.card|default:'#14141a' }};
+      --card-hover:{{ site_settings.get_theme_colors.card_hover|default:'#1a1a20' }};
+      --footer-bg:{{ site_settings.get_theme_colors.footer_bg|default:'rgba(20,20,26,.95)' }};
+
+      /* Text colors */
+      --text:{{ site_settings.get_theme_colors.text|default:'#e9e9ee' }};
+      --text-secondary:{{ site_settings.get_theme_colors.text_secondary|default:'#d1d1d6' }};
+      --muted:{{ site_settings.get_theme_colors.muted|default:'#b5b5c2' }};
+      --muted-light:{{ site_settings.get_theme_colors.muted_light|default:'#9a9aad' }};
+      --navbar-text:{{ site_settings.get_theme_colors.navbar_text|default:'#e9e9ee' }};
+      --navbar-muted:{{ site_settings.get_theme_colors.navbar_muted|default:'#b5b5c2' }};
+
+      /* Border colors */
+      --border:{{ site_settings.get_theme_colors.border|default:'#262633' }};
+      --border-light:{{ site_settings.get_theme_colors.border_light|default:'#3a3a4a' }};
+      --divider:{{ site_settings.get_theme_colors.divider|default:'rgba(38,38,51,.9)' }};
+
+      /* Theme colors */
+      --primary:{{ site_settings.get_theme_colors.primary|default:'#b31919' }};
+      --secondary:{{ site_settings.get_theme_colors.secondary|default:'#8b0000' }};
+      --accent:{{ site_settings.get_theme_colors.accent|default:'#ffffff' }};
+
+      /* Interactive elements */
+      --btn-primary:{{ site_settings.get_theme_colors.btn_primary|default:'linear-gradient(180deg, #b31919, #8b0000)' }};
+      --btn-primary-hover:{{ site_settings.get_theme_colors.btn_primary_hover|default:'linear-gradient(180deg, #c82323, #990000)' }};
+      --btn-ghost:{{ site_settings.get_theme_colors.btn_ghost|default:'rgba(255,255,255,.03)' }};
+      --btn-ghost-hover:{{ site_settings.get_theme_colors.btn_ghost_hover|default:'rgba(255,255,255,.08)' }};
+      --btn-ghost-border:{{ site_settings.get_theme_colors.btn_ghost_border|default:'rgba(255,255,255,.12)' }};
+
+      /* Special effects */
+      --glow:{{ site_settings.get_theme_colors.glow|default:'rgba(179,19,19,.35)' }};
+      --glow-line:{{ site_settings.get_theme_colors.glow_line|default:'linear-gradient(90deg, transparent, rgba(179,19,19,.75), transparent)' }};
+
+      /* Badge and pill */
+      --badge-bg:{{ site_settings.get_theme_colors.badge_bg|default:'rgba(179,19,19,.12)' }};
+      --badge-border:{{ site_settings.get_theme_colors.badge_border|default:'rgba(179,19,19,.25)' }};
+      --badge-text:{{ site_settings.get_theme_colors.badge_text|default:'#ffd0d0' }};
+      --pill-bg:{{ site_settings.get_theme_colors.pill_bg|default:'rgba(255,255,255,.03)' }};
+      --pill-border:{{ site_settings.get_theme_colors.pill_border|default:'rgba(255,255,255,.12)' }};
+      --pill-text:{{ site_settings.get_theme_colors.pill_text|default:'#b5b5c2' }};
+
+      /* Links */
+      --link:{{ site_settings.get_theme_colors.link|default:'#ffb3b3' }};
+      --link-hover:{{ site_settings.get_theme_colors.link_hover|default:'#ffd0d0' }};
+
+      /* Form elements */
+      --form-bg:{{ site_settings.get_theme_colors.form_bg|default:'rgba(255,255,255,.04)' }};
+      --form-border:{{ site_settings.get_theme_colors.form_border|default:'rgba(255,255,255,.10)' }};
+      --form-focus-bg:{{ site_settings.get_theme_colors.form_focus_bg|default:'rgba(255,255,255,.05)' }};
+      --form-focus-border:{{ site_settings.get_theme_colors.form_focus_border|default:'rgba(179,19,19,.55)' }};
+      --form-focus-shadow:{{ site_settings.get_theme_colors.form_focus_shadow|default:'rgba(179,19,19,.18)' }};
+
+      /* Timeline */
+      --timeline-line:{{ site_settings.get_theme_colors.timeline_line|default:'rgba(179,19,19,.35)' }};
+      --timeline-dot:{{ site_settings.get_theme_colors.timeline_dot|default:'#b31919' }};
+      --timeline-glow:{{ site_settings.get_theme_colors.timeline_glow|default:'rgba(179,19,19,.35)' }};
     }
     body{
-      background: radial-gradient(1200px 600px at 20% -10%, rgba(179,19,19,.22), transparent 60%),
-                  radial-gradient(900px 500px at 90% 0%, rgba(179,19,19,.12), transparent 55%),
+      background: radial-gradient(1200px 600px at 20% -10%, var(--glow), transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, var(--glow), transparent 55%),
                   linear-gradient(180deg, var(--bg0), var(--bg1));
       color: var(--text);
     }
     .navbar{
       backdrop-filter: blur(10px);
-      background: rgba(10,10,14,.55) !important;
-      border-bottom: 1px solid rgba(38,38,51,.6);
+      background: var(--navbar-bg) !important;
+      border-bottom: 1px solid var(--border);
     }
     .brand-dot{
       width:10px;height:10px;border-radius:50%;
-      background: var(--red2);
+      background: var(--primary);
       box-shadow: 0 0 18px var(--glow);
       display:inline-block; margin-right:.5rem;
     }
-    .nav-link{ color: var(--muted) !important; }
-    .nav-link:hover, .nav-link.active{ color: var(--text) !important; }
+    .nav-link{ color: var(--navbar-muted) !important; }
+    .nav-link:hover, .nav-link.active{ color: var(--navbar-text) !important; }
     .btn-red{
-      background: linear-gradient(180deg, var(--red2), var(--red));
+      background: var(--btn-primary);
       border: 1px solid rgba(255,255,255,.08);
       color: white;
-      box-shadow: 0 10px 26px rgba(179,19,19,.18);
+      box-shadow: 0 10px 26px var(--glow);
     }
-    .btn-red:hover{ filter: brightness(1.05); }
+    .btn-red:hover{ background: var(--btn-primary-hover); }
     .btn-ghost{
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
+      border: 1px solid var(--btn-ghost-border);
+      background: var(--btn-ghost);
       color: var(--text);
     }
-    .btn-ghost:hover{ background: rgba(255,255,255,.06); }
+    .btn-ghost:hover{ background: var(--btn-ghost-hover); }
     .card-pro{
-      background: linear-gradient(180deg, rgba(20,20,26,.96), rgba(16,16,22,.92));
-      border: 1px solid rgba(38,38,51,.9);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 18px;
       box-shadow: 0 14px 40px rgba(0,0,0,.25);
     }
+    .card-pro:hover{
+      background: var(--card-hover);
+    }
     .badge-soft{
-      background: rgba(179,19,19,.12);
-      border: 1px solid rgba(179,19,19,.25);
-      color: #ffd0d0;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--badge-text);
       border-radius: 999px;
       padding: .35rem .6rem;
       font-weight: 600;
     }
     .text-muted2{ color: var(--muted) !important; }
     .divider{
-      border-top: 1px solid rgba(38,38,51,.9);
+      border-top: 1px solid var(--divider);
     }
     .hero{
       padding: 4.5rem 0 2.5rem 0;
@@ -85,43 +144,44 @@
     }
     .glow-line{
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(179,19,19,.75), transparent);
-      box-shadow: 0 0 18px rgba(179,19,19,.28);
+      background: var(--glow-line);
+      box-shadow: 0 0 18px var(--glow);
     }
     .avatar{
       width: 130px; height: 130px; border-radius: 22px;
       object-fit: cover;
       border: 1px solid rgba(255,255,255,.10);
       box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      background: rgba(255,255,255,.04);
+      background: var(--form-bg);
     }
     .pill{
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
+      border: 1px solid var(--pill-border);
+      background: var(--pill-bg);
       padding: .55rem .8rem;
       border-radius: 999px;
-      color: var(--muted);
+      color: var(--pill-text);
       font-weight: 600;
     }
     .footer{
       color: var(--muted);
-      border-top: 1px solid rgba(38,38,51,.7);
+      background: var(--footer-bg);
+      border-top: 1px solid var(--border);
       padding: 2rem 0;
       margin-top: 3rem;
     }
-    a{ color: #ffb3b3; }
-    a:hover{ color: #ffd0d0; }
+    a{ color: var(--link); }
+    a:hover{ color: var(--link-hover); }
     .form-control, .form-select{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
+      background: var(--form-bg);
+      border: 1px solid var(--form-border);
       color: var(--text);
       border-radius: 14px;
       padding: .85rem .95rem;
     }
     .form-control:focus{
-      background: rgba(255,255,255,.05);
-      border-color: rgba(179,19,19,.55);
-      box-shadow: 0 0 0 .25rem rgba(179,19,19,.18);
+      background: var(--form-focus-bg);
+      border-color: var(--form-focus-border);
+      box-shadow: 0 0 0 .25rem var(--form-focus-shadow);
       color: var(--text);
     }
     .alert{
@@ -139,124 +199,106 @@
     .timeline{ position: relative; padding-left: 1.25rem; }
     .timeline:before{
       content:""; position:absolute; left:.35rem; top:.2rem; bottom:.2rem;
-      width:2px; background: rgba(179,19,19,.35);
-      box-shadow: 0 0 14px rgba(179,19,19,.10);
+      width:2px; background: var(--timeline-line);
+      box-shadow: 0 0 14px var(--timeline-glow);
     }
     .tl-item{ position: relative; padding-left: 1.2rem; margin-bottom: 1.2rem; }
     .tl-item:before{
       content:""; position:absolute; left:-.08rem; top:.3rem;
       width:10px; height:10px; border-radius:50%;
-      background: var(--red2);
-      box-shadow: 0 0 14px rgba(179,19,19,.35);
+      background: var(--timeline-dot);
+      box-shadow: 0 0 14px var(--timeline-glow);
     }
   </style>
-
-  {% block extra_head %}{% endblock %}
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-semibold" href="{% url 'main:home' %}">
+        <span class="brand-dot"></span>
+        {{ profile.full_name|default:"Portfolio" }}
+      </a>
 
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-semibold" href="{% url 'main:home' %}">
-      <span class="brand-dot"></span>
-      {{ profile.full_name|default:"Portfolio" }}
-    </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link active" href="{% url 'main:home' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link " href="{% url 'main:about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link " href="{% url 'main:experience' %}">Experience</a></li>
+          <li class="nav-item"><a class="nav-link " href="{% url 'main:projects' %}">Projects</a></li>
+          <li class="nav-item"><a class="nav-link " href="{% url 'main:contact' %}">Contact</a></li>
+        </ul>
 
-    <div class="collapse navbar-collapse" id="nav">
-      <ul class="navbar-nav ms-auto gap-lg-2">
-        <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'main:home' %}">Home</a></li>
-        <li class="nav-item"><a class="nav-link {% if '/about' in request.path %}active{% endif %}" href="{% url 'main:about' %}">About</a></li>
-        <li class="nav-item"><a class="nav-link {% if '/experience' in request.path %}active{% endif %}" href="{% url 'main:experience' %}">Experience</a></li>
-        <li class="nav-item"><a class="nav-link {% if '/projects' in request.path %}active{% endif %}" href="{% url 'main:projects' %}">Projects</a></li>
-        <li class="nav-item"><a class="nav-link {% if '/contact' in request.path %}active{% endif %}" href="{% url 'main:contact' %}">Contact</a></li>
-      </ul>
+        <div class="d-flex gap-2 ms-lg-3 mt-3 mt-lg-0">
+          {% if profile.cv %}
+            <a class="btn btn-ghost btn-sm" href="{{ profile.cv.url }}" target="_blank" rel="noopener">
+              <i class="bi bi-file-earmark-arrow-down me-1"></i> CV
+            </a>
+          {% endif %}
 
-      <div class="d-flex gap-2 ms-lg-3 mt-3 mt-lg-0">
-        {% if profile.cv_file %}
-          <a class="btn btn-ghost btn-sm" href="{{ profile.cv_file.url }}" target="_blank" rel="noopener">
-            <i class="bi bi-file-earmark-arrow-down me-1"></i> CV
-          </a>
-        {% endif %}
-        {% if profile.github_url %}
-          <a class="btn btn-red btn-sm" href="{{ profile.github_url }}" target="_blank" rel="noopener">
-            <i class="bi bi-github me-1"></i> GitHub
-          </a>
-        {% else %}
-          <a class="btn btn-red btn-sm" href="{% url 'main:contact' %}">
-            <i class="bi bi-send me-1"></i> Hire Me
-          </a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</nav>
-
-<main class="container my-4">
-
-  {% if messages %}
-    <div class="mb-3">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} mb-2" role="alert">
-          {{ message }}
+          {% if profile.github_url %}
+            <a class="btn btn-red btn-sm" href="{{ profile.github_url }}" target="_blank" rel="noopener">
+              <i class="bi bi-github me-1"></i> GitHub
+            </a>
+          {% endif %}
         </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-
-  {% block content %}{% endblock %}
-</main>
-
-<footer class="footer">
-  <div class="container">
-    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center">
-      <div>
-        <div class="fw-semibold">{{ profile.full_name|default:"Your Name" }}</div>
-        <div class="text-muted2 small">{{ profile.headline|default:"Django Developer Portfolio" }}</div>
-      </div>
-
-      <div class="d-flex gap-3">
-        {% if profile.linkedin_url %}
-          <a class="text-decoration-none" href="{{ profile.linkedin_url }}" target="_blank" rel="noopener">
-            <i class="bi bi-linkedin"></i>
-          </a>
-        {% endif %}
-        {% if profile.github_url %}
-          <a class="text-decoration-none" href="{{ profile.github_url }}" target="_blank" rel="noopener">
-            <i class="bi bi-github"></i>
-          </a>
-        {% endif %}
-        {% if profile.facebook_url %}
-          <a class="text-decoration-none" href="{{ profile.facebook_url }}" target="_blank" rel="noopener">
-            <i class="bi bi-facebook"></i>
-          </a>
-        {% endif %}
-        {% if profile.instagram_url %}
-          <a class="text-decoration-none" href="{{ profile.instagram_url }}" target="_blank" rel="noopener">
-            <i class="bi bi-instagram"></i>
-          </a>
-        {% endif %}
-        {% if profile.email %}
-          <a class="text-decoration-none" href="mailto:{{ profile.email }}">
-            <i class="bi bi-envelope"></i>
-          </a>
-        {% endif %}
       </div>
     </div>
+  </nav>
 
-    <!-- ✅ rights line stays inside container, centered nicely -->
-    <div class="text-muted2 small mt-3 text-center">
-      All rights reserved Tawfiq © 2025
+  <!-- Main Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center">
+        <div>
+          <div class="fw-semibold">{{ profile.full_name|default:"Portfolio" }}</div>
+          <div class="text-muted2">{{ profile.headline|default:"Django Developer Portfolio" }}</div>
+        </div>
+
+        <div class="d-flex gap-3">
+          {% if profile.linkedin_url %}
+            <a class="text-decoration-none" href="{{ profile.linkedin_url }}" target="_blank" rel="noopener">
+              <i class="bi bi-linkedin"></i>
+            </a>
+          {% endif %}
+
+          {% if profile.github_url %}
+            <a class="text-decoration-none" href="{{ profile.github_url }}" target="_blank" rel="noopener">
+              <i class="bi bi-github"></i>
+            </a>
+          {% endif %}
+
+          {% if profile.facebook_url %}
+            <a class="text-decoration-none" href="{{ profile.facebook_url }}" target="_blank" rel="noopener">
+              <i class="bi bi-facebook"></i>
+            </a>
+          {% endif %}
+
+          {% if profile.email %}
+            <a class="text-decoration-none" href="mailto:{{ profile.email }}">
+              <i class="bi bi-envelope"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- rights line stays inside container, centered nicely -->
+      <div class="text-muted2 small mt-3 text-center">
+        All rights reserved {{ profile.full_name|default:"Portfolio" }} © 2025
+        <a href="{% url 'main:dashboard' %}" class="text-muted2 ms-2" style="text-decoration: none;">
+          <i class="bi bi-gear"></i>
+        </a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-{% block extra_js %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

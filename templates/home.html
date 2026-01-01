@@ -2,22 +2,17 @@
 {% block title %}Home • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
 
 {% block content %}
+<main class="container my-4">
+
 <section class="hero">
   <div class="row align-items-center g-4">
     <div class="col-lg-7">
-      <div class="d-flex flex-wrap gap-2 mb-3">
-        <span class="badge-soft">Django</span>
-        <span class="badge-soft">DRF Ready</span>
-        <span class="badge-soft">SQA Mindset</span>
-        <span class="badge-soft">Research + BizDev</span>
-      </div>
-
       <h1 class="display-5 fw-bold">
-        {{ profile.headline|default:"CSE Student & Aspiring SQA/Python Engineer" }}
+        {{ profile.headline|default:"Aspiring SQA || Biz Dev || Python Engineer || Vibe Coder" }}
       </h1>
 
       <p class="mt-3 text-muted2 fs-5">
-        {{ profile.about|default:"I build clean Django apps, APIs, and practical systems with a strong testing mindset."|linebreaksbr }}
+        {{ profile.about|default:"Final-year Computer Science and Engineering student with practical leadership and project management experience. Currently working at Connectiya as Assistant Coordinator of Business Development, leading strategic planning and team operations. Passionate about software development and actively learning Python to pursue a career as a Python developer. Proven strengths in team leadership, business coordination, and tech-driven problem solving"|linebreaksbr }}
       </p>
 
       <div class="d-flex flex-wrap gap-2 mt-4">
@@ -46,7 +41,9 @@
     <div class="col-lg-5">
       <div class="card-pro p-4">
         <div class="d-flex align-items-center gap-3">
-          {% if profile.profile_image %}
+          {% if profile.profile_image_link %}
+            <img class="avatar" src="{{ profile.profile_image_link }}" alt="Profile image">
+          {% elif profile.profile_image %}
             <img class="avatar" src="{{ profile.profile_image.url }}" alt="Profile image">
           {% else %}
             <div class="avatar d-flex align-items-center justify-content-center">
@@ -60,19 +57,6 @@
             <div class="small text-muted2 mt-2">
               <i class="bi bi-stars me-1"></i> Available for internships / junior roles
             </div>
-          </div>
-        </div>
-
-        <div class="divider my-4"></div>
-
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="text-muted2 small">Featured Projects</div>
-            <div class="fw-semibold">{{ featured_projects|length }}</div>
-          </div>
-          <div class="col-6">
-            <div class="text-muted2 small">Total Projects</div>
-            <div class="fw-semibold">{{ all_projects|length }}</div>
           </div>
         </div>
 
@@ -102,34 +86,7 @@
         <div class="divider my-3"></div>
 
         {% if featured_projects %}
-          <div class="row g-3">
-            {% for p in featured_projects|slice:":4" %}
-              <div class="col-12">
-                <div class="card-pro p-3">
-                  <div class="d-flex gap-3 align-items-start">
-                    {% if p.image %}
-                      <img src="{{ p.image.url }}" alt="{{ p.title }}" style="width:84px;height:56px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.10);">
-                    {% else %}
-                      <div style="width:84px;height:56px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);" class="d-flex align-items-center justify-content-center">
-                        <i class="bi bi-image text-muted2"></i>
-                      </div>
-                    {% endif %}
-                    <div class="flex-grow-1">
-                      <div class="fw-semibold">{{ p.title }}</div>
-                      <div class="text-muted2 small">{{ p.short_description }}</div>
-                      <div class="text-muted2 small mt-2">
-                        <i class="bi bi-code-slash me-1"></i>{{ p.tech_stack }}
-                      </div>
-                      <div class="mt-2 d-flex flex-wrap gap-2">
-                        {% if p.github_url %}<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="{{ p.github_url }}"><i class="bi bi-github me-1"></i>Code</a>{% endif %}
-                        {% if p.live_url %}<a class="btn btn-red btn-sm" target="_blank" rel="noopener" href="{{ p.live_url }}"><i class="bi bi-box-arrow-up-right me-1"></i>Live</a>{% endif %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
+          <p class="text-muted2 mb-0">Featured projects will be displayed here.</p>
         {% else %}
           <p class="text-muted2 mb-0">No featured projects yet. Mark some projects as featured in Admin.</p>
         {% endif %}
@@ -145,21 +102,7 @@
         <div class="divider my-3"></div>
 
         {% if experiences %}
-          <div class="timeline">
-            {% for e in experiences|slice:":4" %}
-              <div class="tl-item">
-                <div class="fw-semibold">{{ e.role }}</div>
-                <div class="text-muted2 small">
-                  {{ e.organization }}{% if e.location %} • {{ e.location }}{% endif %}
-                </div>
-                <div class="text-muted2 small">
-                  <i class="bi bi-calendar2 me-1"></i>
-                  {{ e.start_date }} —
-                  {% if e.is_current %}Present{% elif e.end_date %}{{ e.end_date }}{% else %}-{% endif %}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
+          <p class="text-muted2 mb-0">Recent experiences will be displayed here.</p>
         {% else %}
           <p class="text-muted2 mb-0">Add experience entries from Admin.</p>
         {% endif %}
@@ -167,4 +110,6 @@
     </div>
   </div>
 </section>
+
+</main>
 {% endblock %}

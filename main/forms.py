@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from django import forms
-from .models import Profile, Project, Education, Experience
+from .models import Profile, Project, Education, Experience, SiteSettings
 
 
 class ProfileForm(forms.ModelForm):
@@ -21,6 +21,10 @@ class ProfileForm(forms.ModelForm):
             "about",
             "cv_file",
             "profile_image",
+            "profile_image_link",
+            "favicon",
+            "favicon_link",
+            "skills",
         ]
         widgets = {
             "about": forms.Textarea(attrs={"rows": 6}),
@@ -78,4 +82,31 @@ class ExperienceForm(forms.ModelForm):
             "start_date": forms.DateInput(attrs={"type": "date"}),
             "end_date": forms.DateInput(attrs={"type": "date"}),
             "description": forms.Textarea(attrs={"rows": 5}),
+        }
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            "site_title",
+            "theme",
+            "primary_color",
+            "secondary_color",
+            "accent_color",
+            "about_page_title",
+            "about_page_subtitle",
+            "about_page_content",
+            "experience_page_title",
+            "experience_page_content",
+            "projects_page_title",
+            "projects_page_content",
+            "contact_page_title",
+            "contact_page_content",
+        ]
+        widgets = {
+            "about_page_content": forms.Textarea(attrs={"rows": 6}),
+            "experience_page_content": forms.Textarea(attrs={"rows": 6}),
+            "projects_page_content": forms.Textarea(attrs={"rows": 6}),
+            "contact_page_content": forms.Textarea(attrs={"rows": 6}),
         }

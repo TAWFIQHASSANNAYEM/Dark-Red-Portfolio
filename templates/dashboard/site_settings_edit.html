@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ site_settings.site_title|default:"Site Settings" }} • Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Site Settings specific styles */
+  .settings-section {
+    background: rgba(255,255,255,.02);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .settings-section h3 {
+    color: var(--muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .color-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,.2);
+    cursor: pointer;
+  }
+  .form-text {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,.6);
+  }
+  .settings-preview {
+    background: rgba(179,19,19,.1);
+    border: 1px solid rgba(179,19,19,.2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .settings-preview h4 {
+    color: #ffd0d0;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="full-section">
+  <div class="container">
+    <div class="card-pro p-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h5 fw-bold mb-0">Edit Site Settings</h1>
+        <a class="btn btn-ghost btn-sm" href="{% url 'main:dashboard' %}"><i class="bi bi-arrow-left me-1"></i> Back</a>
+      </div>
+
+      <div class="divider my-3"></div>
+
+      <form method="post" class="row g-3">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- General Settings -->
+        <div class="settings-section">
+          <h3><i class="bi bi-gear"></i> General Settings</h3>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted2">{{ form.site_title.label }}</label>
+              {{ form.site_title }}
+              <div class="form-text">{{ form.site_title.help_text }}</div>
+              {% if form.site_title.errors %}
+                <div class="text-danger small mt-1">{{ form.site_title.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Theme Selection -->
+        <div class="settings-section">
+          <h3><i class="bi bi-palette-fill"></i> Theme Selection</h3>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted2">{{ form.theme.label }}</label>
+              {{ form.theme }}
+              <div class="form-text">{{ form.theme.help_text }}</div>
+              {% if form.theme.errors %}
+                <div class="text-danger small mt-1">{{ form.theme.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="settings-preview">
+            <h4><i class="bi bi-info-circle me-1"></i> Theme Preview</h4>
+            <p class="mb-0 small">Select a theme above to see how it changes the entire site's color scheme. Each theme includes coordinated colors for backgrounds, text, cards, and accents.</p>
+          </div>
+        </div>
+
+        <!-- Color Theme -->
+        <div class="settings-section">
+          <h3><i class="bi bi-palette"></i> Color Theme</h3>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label text-muted2">{{ form.primary_color.label }}</label>
+              <div class="color-input-group">
+                <input type="color" class="form-control form-control-color" id="id_primary_color" value="{{ form.primary_color.value|default:'#b31919' }}" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                <div class="color-preview" style="background-color: {{ form.primary_color.value|default:'#b31919' }};" onclick="document.getElementById('id_primary_color').click()"></div>
+                <input type="text" class="form-control" id="primary_color_text" value="{{ form.primary_color.value|default:'#b31919' }}" style="flex: 1;" placeholder="#b31919">
+              </div>
+              {{ form.primary_color.as_hidden }}
+              <div class="form-text">{{ form.primary_color.help_text }}</div>
+              {% if form.primary_color.errors %}
+                <div class="text-danger small mt-1">{{ form.primary_color.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted2">{{ form.secondary_color.label }}</label>
+              <div class="color-input-group">
+                <input type="color" class="form-control form-control-color" id="id_secondary_color" value="{{ form.secondary_color.value|default:'#333333' }}" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                <div class="color-preview" style="background-color: {{ form.secondary_color.value|default:'#333333' }};" onclick="document.getElementById('id_secondary_color').click()"></div>
+                <input type="text" class="form-control" id="secondary_color_text" value="{{ form.secondary_color.value|default:'#333333' }}" style="flex: 1;" placeholder="#333333">
+              </div>
+              {{ form.secondary_color.as_hidden }}
+              <div class="form-text">{{ form.secondary_color.help_text }}</div>
+              {% if form.secondary_color.errors %}
+                <div class="text-danger small mt-1">{{ form.secondary_color.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-muted2">{{ form.accent_color.label }}</label>
+              <div class="color-input-group">
+                <input type="color" class="form-control form-control-color" id="id_accent_color" value="{{ form.accent_color.value|default:'#ffffff' }}" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                <div class="color-preview" style="background-color: {{ form.accent_color.value|default:'#ffffff' }};" onclick="document.getElementById('id_accent_color').click()"></div>
+                <input type="text" class="form-control" id="accent_color_text" value="{{ form.accent_color.value|default:'#ffffff' }}" style="flex: 1;" placeholder="#ffffff">
+              </div>
+              {{ form.accent_color.as_hidden }}
+              <div class="form-text">{{ form.accent_color.help_text }}</div>
+              {% if form.accent_color.errors %}
+                <div class="text-danger small mt-1">{{ form.accent_color.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Page Content Settings -->
+        <div class="settings-section">
+          <h3><i class="bi bi-file-text"></i> Page Content</h3>
+
+          <!-- About Page -->
+          <div class="mb-4">
+            <h4 class="h6 fw-bold mb-3" style="color: var(--muted);">About Page</h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.about_page_title.label }}</label>
+                {{ form.about_page_title }}
+                {% if form.about_page_title.errors %}
+                  <div class="text-danger small mt-1">{{ form.about_page_title.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.about_page_subtitle.label }}</label>
+                {{ form.about_page_subtitle }}
+                {% if form.about_page_subtitle.errors %}
+                  <div class="text-danger small mt-1">{{ form.about_page_subtitle.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12">
+                <label class="form-label text-muted2">{{ form.about_page_content.label }}</label>
+                {{ form.about_page_content }}
+                <div class="form-text">{{ form.about_page_content.help_text }}</div>
+                {% if form.about_page_content.errors %}
+                  <div class="text-danger small mt-1">{{ form.about_page_content.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Experience Page -->
+          <div class="mb-4">
+            <h4 class="h6 fw-bold mb-3" style="color: var(--muted);">Experience Page</h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.experience_page_title.label }}</label>
+                {{ form.experience_page_title }}
+                {% if form.experience_page_title.errors %}
+                  <div class="text-danger small mt-1">{{ form.experience_page_title.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.experience_page_content.label }}</label>
+                {{ form.experience_page_content }}
+                <div class="form-text">{{ form.experience_page_content.help_text }}</div>
+                {% if form.experience_page_content.errors %}
+                  <div class="text-danger small mt-1">{{ form.experience_page_content.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Projects Page -->
+          <div class="mb-4">
+            <h4 class="h6 fw-bold mb-3" style="color: var(--muted);">Projects Page</h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.projects_page_title.label }}</label>
+                {{ form.projects_page_title }}
+                {% if form.projects_page_title.errors %}
+                  <div class="text-danger small mt-1">{{ form.projects_page_title.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.projects_page_content.label }}</label>
+                {{ form.projects_page_content }}
+                <div class="form-text">{{ form.projects_page_content.help_text }}</div>
+                {% if form.projects_page_content.errors %}
+                  <div class="text-danger small mt-1">{{ form.projects_page_content.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Page -->
+          <div class="mb-4">
+            <h4 class="h6 fw-bold mb-3" style="color: var(--muted);">Contact Page</h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.contact_page_title.label }}</label>
+                {{ form.contact_page_title }}
+                {% if form.contact_page_title.errors %}
+                  <div class="text-danger small mt-1">{{ form.contact_page_title.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted2">{{ form.contact_page_content.label }}</label>
+                {{ form.contact_page_content }}
+                <div class="form-text">{{ form.contact_page_content.help_text }}</div>
+                {% if form.contact_page_content.errors %}
+                  <div class="text-danger small mt-1">{{ form.contact_page_content.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <button class="btn btn-red" type="submit"><i class="bi bi-check2 me-1"></i> Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+// Function to validate hex color
+function isValidHexColor(hex) {
+  return /^#[0-9A-F]{6}$/i.test(hex);
+}
+
+// Update color text inputs and hidden inputs when color picker changes
+document.getElementById('id_primary_color').addEventListener('input', function() {
+  const value = this.value;
+  document.getElementById('primary_color_text').value = value;
+  document.querySelector('.color-preview[onclick*="primary_color"]').style.backgroundColor = value;
+  document.querySelector('input[name="primary_color"]').value = value;
+});
+
+document.getElementById('id_secondary_color').addEventListener('input', function() {
+  const value = this.value;
+  document.getElementById('secondary_color_text').value = value;
+  document.querySelector('.color-preview[onclick*="secondary_color"]').style.backgroundColor = value;
+  document.querySelector('input[name="secondary_color"]').value = value;
+});
+
+document.getElementById('id_accent_color').addEventListener('input', function() {
+  const value = this.value;
+  document.getElementById('accent_color_text').value = value;
+  document.querySelector('.color-preview[onclick*="accent_color"]').style.backgroundColor = value;
+  document.querySelector('input[name="accent_color"]').value = value;
+});
+
+// Update color picker, preview, and hidden inputs when text input changes
+document.getElementById('primary_color_text').addEventListener('input', function() {
+  const value = this.value;
+  if (isValidHexColor(value)) {
+    document.getElementById('id_primary_color').value = value;
+    document.querySelector('.color-preview[onclick*="primary_color"]').style.backgroundColor = value;
+    document.querySelector('input[name="primary_color"]').value = value;
+  }
+});
+
+document.getElementById('secondary_color_text').addEventListener('input', function() {
+  const value = this.value;
+  if (isValidHexColor(value)) {
+    document.getElementById('id_secondary_color').value = value;
+    document.querySelector('.color-preview[onclick*="secondary_color"]').style.backgroundColor = value;
+    document.querySelector('input[name="secondary_color"]').value = value;
+  }
+});
+
+document.getElementById('accent_color_text').addEventListener('input', function() {
+  const value = this.value;
+  if (isValidHexColor(value)) {
+    document.getElementById('id_accent_color').value = value;
+    document.querySelector('.color-preview[onclick*="accent_color"]').style.backgroundColor = value;
+    document.querySelector('input[name="accent_color"]').value = value;
+  }
+});
+</script>
+{% endblock %}

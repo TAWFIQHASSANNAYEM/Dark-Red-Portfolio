@@ -2,69 +2,79 @@
 {% block title %}Experience • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-  <div class="col-lg-8">
-    <div class="card-pro p-4">
-      <h1 class="h4 fw-bold mb-0">Experience</h1>
-      <p class="text-muted2 mt-2">Roles, responsibilities, and impact.</p>
+<main class="container my-4">
 
-      <div class="divider my-3"></div>
+<section>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card-pro p-4">
+        <h1 class="h4 fw-bold mb-0">{{ site_settings.experience_page_title|default:"Experience" }}</h1>
+        {% if site_settings.experience_page_content %}
+          <p class="text-muted2 mt-2">{{ site_settings.experience_page_content|linebreaksbr }}</p>
+        {% else %}
+          <p class="text-muted2 mt-2">Roles, responsibilities, and impact.</p>
+        {% endif %}
 
-      {% if experiences %}
-        <div class="timeline">
-          {% for e in experiences %}
-            <div class="tl-item">
-              <div class="d-flex flex-wrap justify-content-between gap-2">
-                <div>
-                  <div class="fw-semibold">{{ e.role }}</div>
-                  <div class="text-muted2 small">{{ e.organization }}{% if e.location %} • {{ e.location }}{% endif %}</div>
+        <div class="divider my-3"></div>
+
+        {% if experiences %}
+          <div class="timeline">
+            {% for e in experiences %}
+              <div class="tl-item">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                  <div>
+                    <div class="fw-semibold">{{ e.role }}</div>
+                    <div class="text-muted2 small">{{ e.organization }}{% if e.location %} • {{ e.location }}{% endif %}</div>
+                  </div>
+                  <div class="text-muted2 small">
+                    <span class="badge-soft">
+                      {{ e.start_date }} —
+                      {% if e.is_current %}Present{% elif e.end_date %}{{ e.end_date }}{% else %}-{% endif %}
+                    </span>
+                  </div>
                 </div>
-                <div class="text-muted2 small">
-                  <span class="badge-soft">
-                    {{ e.start_date }} —
-                    {% if e.is_current %}Present{% elif e.end_date %}{{ e.end_date }}{% else %}-{% endif %}
-                  </span>
-                </div>
+                {% if e.description %}
+                  <div class="text-muted2 small mt-2">{{ e.description|linebreaksbr }}</div>
+                {% endif %}
               </div>
-              {% if e.description %}
-                <div class="text-muted2 small mt-2">{{ e.description|linebreaksbr }}</div>
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p class="text-muted2 mb-0">Add experience entries from Admin.</p>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="col-lg-4">
-    <div class="card-pro p-4">
-      <h2 class="h6 fw-semibold mb-3">Quick Links</h2>
-      <div class="d-grid gap-2">
-        <a class="btn btn-red" href="{% url 'main:projects' %}"><i class="bi bi-kanban me-1"></i> Projects</a>
-        <a class="btn btn-ghost" href="{% url 'main:contact' %}"><i class="bi bi-envelope me-1"></i> Contact</a>
-        {% if profile.cv_file %}
-          <a class="btn btn-ghost" href="{{ profile.cv_file.url }}" target="_blank" rel="noopener"><i class="bi bi-download me-1"></i> Download CV</a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted2 mb-0">Add experience entries from Admin.</p>
         {% endif %}
       </div>
+    </div>
 
-      <div class="divider my-4"></div>
-
-      <h2 class="h6 fw-semibold mb-3">Education</h2>
-      {% if educations %}
-        <div class="d-flex flex-column gap-2">
-          {% for ed in educations|slice:":3" %}
-            <div class="card-pro p-3">
-              <div class="fw-semibold small">{{ ed.degree }}</div>
-              <div class="text-muted2 small">{{ ed.institution }}</div>
-            </div>
-          {% endfor %}
+    <div class="col-lg-4">
+      <div class="card-pro p-4">
+        <h2 class="h6 fw-semibold mb-3">Quick Links</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-red" href="{% url 'main:projects' %}"><i class="bi bi-kanban me-1"></i> Projects</a>
+          <a class="btn btn-ghost" href="{% url 'main:contact' %}"><i class="bi bi-envelope me-1"></i> Contact</a>
+          {% if profile.cv %}
+            <a class="btn btn-ghost" href="{{ profile.cv.url }}" target="_blank" rel="noopener"><i class="bi bi-download me-1"></i> Download CV</a>
+          {% endif %}
         </div>
-      {% else %}
-        <p class="text-muted2 mb-0">Add education from Admin.</p>
-      {% endif %}
+
+        <div class="divider my-4"></div>
+
+        <h2 class="h6 fw-semibold mb-3">Education</h2>
+        {% if educations %}
+          <div class="d-flex flex-column gap-2">
+            {% for ed in educations|slice:":3" %}
+              <div class="card-pro p-3">
+                <div class="fw-semibold small">{{ ed.degree }}</div>
+                <div class="text-muted2 small">{{ ed.institution }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted2 mb-0">Add education from Admin.</p>
+        {% endif %}
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+</main>
 {% endblock %}

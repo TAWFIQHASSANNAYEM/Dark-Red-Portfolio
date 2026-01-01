@@ -9,7 +9,7 @@ from .views import (
     dashboard_project_add_view, dashboard_project_edit_view, dashboard_project_delete_view,
     dashboard_education_add_view, dashboard_education_edit_view, dashboard_education_delete_view,
     dashboard_experience_add_view, dashboard_experience_edit_view, dashboard_experience_delete_view,
-
+    dashboard_site_settings_edit_view,
 )
 
 app_name = "main"
@@ -47,6 +47,8 @@ urlpatterns = [
     path("dashboard/experience/<int:pk>/edit/", dashboard_experience_edit_view, name="dashboard_experience_edit"),
     path("dashboard/experience/<int:pk>/delete/", dashboard_experience_delete_view, name="dashboard_experience_delete"),
 
+    # Site Settings
+    path("dashboard/site-settings/", dashboard_site_settings_edit_view, name="dashboard_site_settings_edit"),
 
 ]
 

@@ -1,19 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Projects • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
+{% block title %}{{ site_settings.projects_page_title|default:"Projects" }} • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
 
 {% block content %}
-<div class="card-pro p-4 mb-4">
-  <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-    <div>
-      <h1 class="h4 fw-bold mb-1">Projects</h1>
-      <div class="text-muted2">Selected work and builds. Click code/live links.</div>
+<main class="container my-4">
+
+<section>
+  <div class="card-pro p-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+      <div>
+        <h1 class="h4 fw-bold mb-1">{{ site_settings.projects_page_title|default:"Projects" }}</h1>
+        {% if site_settings.projects_page_content %}
+          <div class="text-muted2">{{ site_settings.projects_page_content|linebreaksbr }}</div>
+        {% else %}
+          <div class="text-muted2">Selected work and builds. Click code/live links.</div>
+        {% endif %}
+      </div>
+      <a class="btn btn-red" href="{% url 'main:contact' %}"><i class="bi bi-send me-1"></i> Work with me</a>
     </div>
-    <a class="btn btn-red" href="{% url 'main:contact' %}"><i class="bi bi-send me-1"></i> Work with me</a>
   </div>
-</div>
+</section>
 
 {% if featured_projects %}
-  <div class="mb-4">
+  <section class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h2 class="h6 fw-semibold mb-0">Featured</h2>
       <span class="text-muted2 small">{{ featured_projects|length }} items</span>
@@ -36,10 +44,10 @@
         </div>
       {% endfor %}
     </div>
-  </div>
+  </section>
 {% endif %}
 
-<div>
+<section>
   <div class="d-flex align-items-center justify-content-between mb-2">
     <h2 class="h6 fw-semibold mb-0">All Projects</h2>
     <span class="text-muted2 small">{{ projects|length }} items</span>
@@ -78,5 +86,7 @@
   {% else %}
     <p class="text-muted2 mb-0">Add projects from Admin.</p>
   {% endif %}
-</div>
+</section>
+
+</main>
 {% endblock %}
