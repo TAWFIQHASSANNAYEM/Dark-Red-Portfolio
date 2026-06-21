@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Research • {{ profile.full_name|default:"Portfolio" }}{% endblock %}
+
+{% block content %}
+<main class="container my-4">
+
+<section>
+  <div class="card-pro p-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+      <div>
+        <h1 class="h4 fw-bold mb-0">Research &amp; Publications</h1>
+        <p class="text-muted2 mt-2 mb-0">Conference papers, journal submissions, and manuscripts in preparation.</p>
+      </div>
+      <a class="btn btn-red" href="{% url 'main:projects' %}"><i class="bi bi-box-seam me-1"></i> Projects</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card-pro p-4 h-100">
+        <h2 class="h6 fw-semibold mb-3">Highlights</h2>
+        <div class="text-muted2 small">
+          <div class="fw-semibold mb-2">Conference Paper (Presented):</div>
+          <div>“Explainable Artificial Intelligence (XAI) for Early Diabetes Prediction: A Lightweight XGBoost Model with SHAP Interpretation” — Presented at IEEE QPAIN 2026</div>
+
+          <div class="fw-semibold mt-3 mb-2">Conference Paper (Accepted):</div>
+          <div>“TOE Framework Analysis of AI-Augmented Telemedicine Adoption by Healthcare Providers in Dhaka, Bangladesh” — Accepted, Taylor &amp; Francis conference proceedings</div>
+
+          <div class="fw-semibold mt-3 mb-2">Journal Paper (Under Review):</div>
+          <div>“A Global Scoping Review of Traditional, Digital, and AI-Driven Interventions in Healthcare Referral Systems: Comparative Insights from Low-, Middle-, and High-Income Countries”</div>
+
+          <div class="fw-semibold mt-3 mb-2">Manuscripts in Preparation:</div>
+          <div>Design and Evaluation of an Explainable GP-Centric Clinical Decision Support System for Healthcare Referral in Bangladesh</div>
+          <div>Rice Leaf Disease Detection using MobileNetV2 with Hybrid Attention</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card-pro p-4 h-100">
+        <h2 class="h6 fw-semibold mb-3">Quick Links</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-ghost" href="{% url 'main:experience' %}"><i class="bi bi-briefcase me-1"></i> Experience</a>
+          <a class="btn btn-ghost" href="{% url 'main:contact' %}"><i class="bi bi-envelope me-1"></i> Contact</a>
+        </div>
+        <div class="divider my-4"></div>
+        <h2 class="h6 fw-semibold mb-3">Contact</h2>
+        {% if profile.email %}
+          <a class="btn btn-red" href="mailto:{{ profile.email }}"><i class="bi bi-envelope me-1"></i> Email Me</a>
+        {% else %}
+          <p class="text-muted2 mb-0">Add your email in Profile to enable contact CTA.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}

@@ -1,26 +1,16 @@
-- [x] Fixed CV download option on homepage by changing `profile.cv` to `profile.cv_file` in home.html
-- [x] Fixed site settings edit form by ensuring defaults are set in the view if fields are empty
-- [x] Made site settings edit page title dynamic to include site_title
-=======
-## Recent Fixes Applied
-- [x] Fixed CV download option on homepage by changing `profile.cv` to `profile.cv_file` in home.html
-- [x] Fixed site settings edit form by ensuring defaults are set in the view if fields are empty
-- [x] Made site settings edit page title dynamic to include site_title
-
-## Theme System Implementation - COMPLETE ✅
-- [x] Added theme field to SiteSettings model with 10 predefined themes
-- [x] Implemented get_theme_colors() method with complete color palettes
-- [x] Updated SiteSettingsForm to include theme selector
-- [x] Modified base.html template to use dynamic theme colors via CSS variables
-- [x] Added theme selector to site settings edit template
-- [x] Created comprehensive test suite (test_themes.py, test_theme_integration.py)
-- [x] All tests passed - theme system fully functional
-- [x] Verified database persistence, form integration, and template rendering
-
-## Theme Expansion - COMPLETE ✅
-- [x] Expanded from 4 to 10 comprehensive dark themes
-- [x] Added 6 new themes: Ocean Deep, Sunset Orange, Forest Dark, Royal Purple, Cyberpunk, Midnight Blue
-- [x] Updated THEME_CHOICES to reflect new theme names with descriptive labels
-- [x] Applied Django migrations to update database schema
-- [x] Verified all themes work correctly with comprehensive color palettes
-- [x] Each theme includes 30+ color properties for complete UI customization
+- [x] Step 1: Inspect forms/admin/template usage to map content to the correct model fields (Profile, Experience, Education, Project).
+- [x] Step 2: Add “Research” page route + view + template (new files) using existing design classes (card-pro/text-muted2/divider).
+- [x] Step 3: Update navbar in templates/base.html to include “Research” link.
+- [x] Step 4: DB update via Django shell/commands:
+  - [x] Update Profile: headline/about/skills/email/phone/location + social links + (leave image/favicons as-is unless already present)
+  - [x] Update 2 Experience roles with exact bullet text
+  - [x] Update 2 Education entries
+  - [x] Update 5 Projects: title + short_description (from provided descriptions) + infer tech_stack + keep github_url/live_url as-is if already set
+- [ ] Step 5: Verify templates render:
+  - [ ] /experience shows Research section (moved out) and doesn’t break Education sidebar
+  - [ ] /research shows Research content
+  - [ ] navbar links work
+- [ ] Step 6: Quick sanity checks:
+  - [ ] collectstatic
+  - [ ] migrate (if needed)
+  - [ ] run Django checks

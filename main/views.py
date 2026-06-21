@@ -93,6 +93,18 @@ def projects_view(request):
     return render(request, "projects.html", context)
 
 
+def research_view(request):
+    """
+    Research & Publications page view.
+    Research content is currently rendered from template (no Research model).
+    """
+    context = {
+        "profile": Profile.objects.first(),
+        "site_settings": SiteSettings.objects.first(),
+    }
+    return render(request, "research.html", context)
+
+
 def contact_view(request):
     """
     Contact page view.

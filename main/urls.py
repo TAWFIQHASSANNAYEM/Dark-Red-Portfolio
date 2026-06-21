@@ -4,6 +4,7 @@ from .views import (
     about_view,
     experience_view,
     projects_view,
+    research_view,
     contact_view,
     dashboard_view, dashboard_profile_edit_view,
     dashboard_project_add_view, dashboard_project_edit_view, dashboard_project_delete_view,
@@ -29,6 +30,9 @@ urlpatterns = [
 
     # Contact form
     path("contact/", contact_view, name="contact"),
+
+    # Research & Publications
+    path("research/", research_view, name="research"),
     
         # Hidden dashboard (frontend CRUD)
     path("dashboard/", dashboard_view, name="dashboard"),
